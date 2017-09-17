@@ -6,6 +6,11 @@ mov ah, 0x0e ; int 10/ah = 0eh -> scrolling tty BIOS routine
 
 mov bx, my_string ; Move my_string address into bx
 
+; Puts 
+; arg: bx has label we want to print
+; When done we jump to forever
+puts: 
+
 print_string:
   mov al, [bx]  ; Move first character of my_string into al
   cmp al, 0     ; Check for null-term
@@ -15,6 +20,8 @@ print_string:
   int 0x10      ; print it
   add bx, 1     ; move on to next register
   jmp print_string ; try again
+
+; End puts
   
 
 forever:
