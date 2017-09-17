@@ -20,3 +20,8 @@ show-boot-sect:
 asm-boot-sector-msg:
 	nasm print_msg.asm -f bin -o boot_sect.bin
 
+asm-boot-sector-addressing:
+	nasm addressing.asm -f bin -o boot_sect.bin
+
+asm-boot-sector-loop-print:
+	nasm print_msg_loop.asm -f bin -o boot_sect.bin
