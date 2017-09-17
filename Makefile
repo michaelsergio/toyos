@@ -10,3 +10,6 @@ asm-boot-sector:
 
 clean:
 	rm -f boot_sect boot_sect.asm
+
+boot:
+	qemu-system-i386 -drive format=raw,file=boot_sect
