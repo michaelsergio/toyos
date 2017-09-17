@@ -20,8 +20,7 @@ print_string:
   popa           ; restores original registers values
   ret
 
-puts:
-  call print_string
+newline:
   push ax
   mov ah, 0x0e   ; int=10/ah=0xoe -> BIOS tty support
   mov al, 13     ; add carrige return \r
@@ -29,4 +28,9 @@ puts:
   mov al, 10     ; add new line \n
   int 0x10       ; put char
   pop ax
+  ret
+
+puts:
+  call print_string
+  call newline
   ret
