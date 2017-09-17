@@ -13,3 +13,6 @@ clean:
 
 boot:
 	qemu-system-i386 -drive format=raw,file=boot_sect
+
+show-boot-sect:
+	od -t x1 -A n boot_sect
