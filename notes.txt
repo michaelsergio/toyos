@@ -1,0 +1,5 @@
+Main Guide:
+https://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf
+
+Secondary Blog:
+https://os.phil-opp.com/multiboot-kernel/
