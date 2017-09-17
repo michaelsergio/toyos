@@ -25,3 +25,6 @@ asm-boot-sector-addressing:
 
 asm-boot-sector-loop-print:
 	nasm print_msg_loop.asm -f bin -o boot_sect.bin
+
+asm-stack-test:
+	nasm stack_test.asm -f bin -o boot_sect.bin
