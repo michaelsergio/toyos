@@ -1,2 +1,5 @@
 os-dev.pdf
 *.iso
+
+boot_sect
+boot_sect.bin
