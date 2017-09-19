@@ -41,6 +41,7 @@ puts:
 putui:
   pusha
     mov ax, bx
+    mov dx, 0      ; set a stack counter
     
     get_rightmost_digit:
       mov bl, 10   ; operand is byte 10 (ax/10)
@@ -50,18 +51,26 @@ putui:
 
       mov cx, 0
       mov cl, ah   ; put remainder into memory
-		   ; print digit
-      add cx, 48   ; convert num to ascii val
-      mov ax, cx   ; put contents into register (only al matters)
-      mov ah, 0x0e ; int=10/ah=0xoe -> BIOS tty support
-      int 0x10     ; print char
+      push cx
+      inc dx
 
       mov ax, bx   ; Repeat division operation with result
       mov ah, 0    ; Clear mod result from prev operation
 
       cmp ax, 0    ; if not zero, repeat
       jnz get_rightmost_digit
+      
 
+      pop_stack_item:
+      pop cx
+		   ; print digit
+      add cx, 48   ; convert num to ascii val
+      mov ax, cx   ; put contents into register (only al matters)
+      mov ah, 0x0e ; int=10/ah=0xoe -> BIOS tty support
+      int 0x10     ; print char
+      dec dx
+      cmp dx, 0    ; if we havent pop'd everything, loop
+      jnz pop_stack_item
 
   call newline
   popa
