@@ -36,93 +36,100 @@ puts:
   ret
 
 
+; Character should be in bl
+putc: 
+  push bx
+  mov ah, 0x0e   ; int=10/ah=0xoe -> BIOS tty support mov al, 13     
+  mov al, bl     ; char
+  int 0x10       ; put char
+  call newline
+  pop bx
+  ret
+
+
 ; Put unsigned int
 ; bx is a value to print
 putui:
   pusha
     mov ax, bx
-    mov dx, 0      ; set a stack counter
+    mov cx, 0      ; set a stack counter
     
     get_rightmost_digit:
-      mov bl, 10   ; operand is byte 10 (ax/10)
-      idiv bl      ; ah is mod. al is result
+      mov dx, 0    ; 0 is first part of word
+      mov bx, 10   ; operand is byte 10 (dx ax/10)
+      idiv bx      ; 
 
-      mov bx, ax   ; Store the value here
+      push dx      ; Put Modulus result onto stack
+      inc cx       ; increase number of items on stack
 
-      mov cx, 0
-      mov cl, ah   ; put remainder into memory
-      push cx
-      inc dx
-
-      mov ax, bx   ; Repeat division operation with result
-      mov ah, 0    ; Clear mod result from prev operation
-
-      cmp ax, 0    ; if not zero, repeat
+      cmp ax, 0    ; if result not zero, repeat
       jnz get_rightmost_digit
-      
 
-      pop_stack_item:
-      pop cx
-		   ; print digit
-      add cx, 48   ; convert num to ascii val
-      mov ax, cx   ; put contents into register (only al matters)
       mov ah, 0x0e ; int=10/ah=0xoe -> BIOS tty support
-      int 0x10     ; print char
-      dec dx
-      cmp dx, 0    ; if we havent pop'd everything, loop
-      jnz pop_stack_item
+      pop_stack_item:
+	pop dx       ; Get modulus off stack
+		     ; print digit
+	add dx, 48   ; convert num to ascii val
+	mov al, dl   ; put contents into register (only al matters)
+	int 0x10     ; print char
+	dec cx
+	cmp cx, 0    ; if we havent pop'd everything, loop
+	jnz pop_stack_item
 
   call newline
   popa
   ret
 
 
-; print_hex - prints a hex address
-; dx: the address we want to print
-print_hex:
+; bx has a hex address
+putx:
   pusha
+  mov cx, 0      ; stack counter
 
-  mov bx, 5      ; bx holds the write position
+  get_nibble:
+    mov ax, bx     ; working copy of hex addres
+    and ax, 0x0f   ; Get right most nibble
+    push ax        ; put nibble on stack and inc count
+    inc cx          
+    shr bx, 4      ; move to next nibble
+    cmp bx, 0      ; if non zero, then repeat
+  jnz get_nibble
 
-  mov cx, dx     ; Keep the hex so we can shift it
+  mov ah, 0x0e     ; int=10/ah=0xoe -> BIOS tty support mov al, 13     
+  mov al, '0'      ; print 0x
+  int 0x10         ; print char
+  mov al, 'x'      ; move ascii char into register
+  int 0x10         ; print char
 
-  write_nibble_value:
+  pop_stack:
+    pop ax
+    call convert_hex_to_ascii ; mutate ax into an ascii char
 
-  mov ax, cx     ; get a working copy of the hex
-  and ax, 0x0f   ; Get rightmost nibble value
+    mov bh, 0x0e   ; int=10/ah=0xoe -> BIOS tty support mov al, 13     
+    mov bl, al     ; move ascii char into register
+    mov ax, bx     ; move tmp register bx into ax
+    int 0x10       ; print char
+    
+    dec cx
+    cmp cx, 0
+  jnz pop_stack
+
+  call newline
+  popa
+  ret
+
+
+; mutable arg ax
+convert_hex_to_ascii
   cmp ax, 10     ; Check where on the ascii table we should look
 
   jl not_hex_char_range
   add ax, 7      ; Add a total of 55 ('A' at 65) 
                  ;(sub 10 to make it start at 0) (so 7 total)
-
   not_hex_char_range:
   add ax, 48     ; if its a number add 48 
-
-  ; mov [HEX_OUT], byte ax  ; write to current position
-  mov [HEX_OUT+bx], byte ax  ; write to current position
-
-  push bx
-  mov bx, HEX_OUT
-  call puts
-  pop bx
-
-  shr cx, 1            ; Move to next nibble
-
-  sub bx, 1            ; Decrement position
-  cmp bx, 2            ; Continue only if >= 2
-  jge write_nibble_value
-
-
-
-  mov bx, HEX_OUT       ;; Write to HEX_OUT
-  ; call puts
-
-  popa
   ret
 
-; Global variable hex buffer
-HEX_OUT: db'0x0000', 0
 
 
 ; Put binary

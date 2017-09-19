@@ -28,6 +28,14 @@ call putbin
 mov bx, 15
 call putui 
 
+mov bx, 'z'
+call putc
+
+mov bx, 64321
+call putui 
+
+mov bx, 0x1fb6
+call putx
 
 ; mov dx, 0x1fb6
 ; call print_hex
