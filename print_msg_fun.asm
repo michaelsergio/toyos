@@ -5,8 +5,25 @@
 mov bx, HELLO_MSG   ; Use bx as a param to out function
 call puts
 
-mov bx, GOODBYE_MSG ; 
+mov bx, GOODBYE_MSG 
 call puts
+
+; mov bx, 163
+; call putui
+
+
+
+mov bx, 77
+call putbin
+
+mov bx, 12
+call putbin
+
+mov bx, 1
+call putbin
+
+; mov dx, 0x1fb6
+; call print_hex
 
 jmp $               ; Hang
 

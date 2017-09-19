@@ -30,4 +30,9 @@ asm-stack-test:
 	nasm stack_test.asm -f bin -o boot_sect.bin
 
 asm-boot-sector-print-fun:
-	nasm print_msg_fun.asm -f bin -o boot_sect.bin
+	nasm print_msg_fun.asm -g -f bin -o boot_sect.bin
+
+#  Buld with -g for symbols
+#  Need to connect with gdb to 'target remote localhost:1234'
+debug:
+	qemu-system-i386 -s -S -drive format=raw,file=boot_sect.bin
