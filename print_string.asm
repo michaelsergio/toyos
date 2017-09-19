@@ -40,27 +40,28 @@ puts:
 ; bx is a value to print
 putui:
   pusha
-  mov cx, 0  ; count for poping
-
-
-  mov ax, bx  ; copy bx into ax
-  put_int_on_stack:
-    mov dx, 10
-    div dx      ; do the divison  ax/dx = ax rem: dx
-    push dx     ; put remainder onto stack
-    add cx, 1   ; inc count
-    cmp ax, 0  ; check that bx is > 0
-    jg put_int_on_stack
-
-  unwind_stack:
-    pop bx       ; get last digit
-    add bx, 48   ; convert num to ascii val
     mov ax, bx
-    mov ah, 0x0e   ; int=10/ah=0xoe -> BIOS tty support
-    int 0x10     ; print char
-    sub cx, 1    ; dec counter
-    cmp cx, 0    ; keep going if > 0
-    jg unwind_stack
+    
+    get_rightmost_digit:
+      mov bl, 10   ; operand is byte 10 (ax/10)
+      idiv bl      ; ah is mod. al is result
+
+      mov bx, ax   ; Store the value here
+
+      mov cx, 0
+      mov cl, ah   ; put remainder into memory
+		   ; print digit
+      add cx, 48   ; convert num to ascii val
+      mov ax, cx   ; put contents into register (only al matters)
+      mov ah, 0x0e ; int=10/ah=0xoe -> BIOS tty support
+      int 0x10     ; print char
+
+      mov ax, bx   ; Repeat division operation with result
+      mov ah, 0    ; Clear mod result from prev operation
+
+      cmp ax, 0    ; if not zero, repeat
+      jnz get_rightmost_digit
+
 
   call newline
   popa

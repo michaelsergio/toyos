@@ -22,6 +22,13 @@ call putbin
 mov bx, 1
 call putbin
 
+mov bx, 1
+call putbin
+
+mov bx, 15
+call putui 
+
+
 ; mov dx, 0x1fb6
 ; call print_hex
 
