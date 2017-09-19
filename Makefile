@@ -38,6 +38,9 @@ asm-boot-sector-disk_seg:
 asm-boot-sector-disk-drive:
 	nasm disk_drive.asm -f bin -o boot_sect.bin
 
+asm-boot-sector-protected-mode:
+	nasm protected_mode.asm -f bin -o boot_sect.bin
+
 #  Buld with -g for symbols
 #  Need to connect with gdb to 'target remote localhost:1234'
 debug:
