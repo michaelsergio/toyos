@@ -11,29 +11,27 @@ call puts
 ; mov bx, 163
 ; call putui
 
-
-
-mov bx, 77
-call putbin
-
-mov bx, 12
-call putbin
-
-mov bx, 1
-call putbin
-
-mov bx, 1
-call putbin
-
-mov bx, 15
-call putui 
-
-mov bx, 'z'
-call putc
-
-mov bx, 64321
-call putui 
-
+; mov bx, 77
+; call putbin
+;
+; mov bx, 12
+; call putbin
+;
+; mov bx, 1
+; call putbin
+;
+; mov bx, 1
+; call putbin
+;
+; mov bx, 15
+; call putui 
+;
+; mov bx, 'z'
+; call putc
+;
+; mov bx, 64321
+; call putui 
+;
 mov bx, 0x1fb6
 call putx
 
