@@ -3,3 +3,7 @@ os-dev.pdf
 
 boot_sect
 boot_sect.bin
+
+os-image
+*.o
+*.bin
