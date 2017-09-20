@@ -1,5 +1,4 @@
 all: nothing
-
 nothing:
 
 make-os:
@@ -9,7 +8,7 @@ asm-boot-sector:
 	nasm boot_sect.asm -f bin -o boot_sect.bin
 
 clean:
-	rm -f boot_sect boot_sect.bin
+	rm -f boot_sect *.bin *.o os-image
 
 boot:
 	qemu-system-i386 -drive format=raw,file=boot_sect.bin
@@ -40,6 +39,25 @@ asm-boot-sector-disk-drive:
 
 asm-boot-sector-protected-mode:
 	nasm protected_mode.asm -f bin -o boot_sect.bin
+
+c-simple-build:
+	gcc -ffreestanding -c basic.c -o basic.o
+
+c-kernel-basic:
+	gcc -ffreestanding -c kernel.c -o kernel.o
+
+asm-boot-sector-kernel-build:
+	nasm run_kernel.asm -f bin -o boot_sect.bin
+
+kernel-boot: combine-c-code
+	qemu-system-i386 -fda os-image -drive format=raw,file=os-image
+
+compiled-c-kernel: c-kernel-basic
+	ld kernel.o -o kernel.bin -segaddr __TEXT 0x1000 -r -U start
+
+
+combine-c-code: asm-boot-sector-kernel-build compiled-c-kernel
+	cat boot_sect.bin kernel.bin > os-image
 
 #  Buld with -g for symbols
 #  Need to connect with gdb to 'target remote localhost:1234'
