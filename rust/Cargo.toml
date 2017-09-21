@@ -1,0 +1,8 @@
+[package]
+name = "sergi_os"
+version = "0.1.0"
+authors = ["Mike Sergio"]
+
+[lib]
+crate-type = ["staticlib"]
+
