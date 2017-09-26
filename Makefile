@@ -53,7 +53,8 @@ kernel-boot: combine-c-code
 	qemu-system-i386 -fda os-image -drive format=raw,file=os-image
 
 compiled-c-kernel: c-kernel-basic
-	ld kernel.o -o kernel.bin -segaddr __TEXT 0x1000 -r -U start
+	ld kernel.o -o kernel.bin -T linker.ld -r -U start
+	#ld kernel.o -o kernel.bin -segaddr __TEXT 0x1000 -r -U start
 
 
 combine-c-code: asm-boot-sector-kernel-build compiled-c-kernel
